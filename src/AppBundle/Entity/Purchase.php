@@ -108,8 +108,18 @@ class Purchase
      */
     private $product;
 
-    public function __construct(string $customerName, string $customerEmail, string $customerMobile, string $customerAddress, string $status, string $reference, string $description, string $currency, int $total, Product $product)
-    {
+    public function __construct(
+        string $customerName,
+        string $customerEmail,
+        string $customerMobile,
+        string $customerAddress,
+        string $status,
+        string $reference,
+        string $description,
+        string $currency,
+        int $total,
+        Product $product
+    ) {
         $this->createdAt = new DateTime();
         $this->updatedAt = new DateTime();
         $this->customerName = $customerName;
@@ -127,7 +137,7 @@ class Purchase
     /**
      * Get id by purchase
      */
-    public function getId() : int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -135,7 +145,7 @@ class Purchase
     /**
      * Get customer name by purchase
      */
-    public function getCustomerName() : string
+    public function getCustomerName(): string
     {
         return $this->customerName;
     }
@@ -143,7 +153,7 @@ class Purchase
     /**
      * Get customer Email by purchase
      */
-    public function getCustomerEmail() : string
+    public function getCustomerEmail(): string
     {
         return $this->customerEmail;
     }
@@ -151,7 +161,7 @@ class Purchase
     /**
      * Get customer Mobile by purchase
      */
-    public function getCustomerMobile() : string
+    public function getCustomerMobile(): string
     {
         return $this->customerMobile;
     }
@@ -159,7 +169,7 @@ class Purchase
     /**
      * Get customer Address by purchase
      */
-    public function getCustomerAddress() : string
+    public function getCustomerAddress(): string
     {
         return $this->customerAddress;
     }
@@ -167,7 +177,7 @@ class Purchase
     /**
      * Set status of Purchase order
      */
-    public function setStatus(string $status) : void
+    public function setStatus(string $status): void
     {
         $this->status = $status;
     }
@@ -175,7 +185,7 @@ class Purchase
     /**
      * Get status by purchase
      */
-    public function getStatus() : string
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -183,7 +193,7 @@ class Purchase
     /**
      * Get createdAt by purchase
      */
-    public function getCreatedAt()  : \DateTime
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
@@ -191,7 +201,7 @@ class Purchase
     /**
      * Set updatedAt by purchase
      */
-    public function setUpdatedAt(\DateTime $updatedAt) : void
+    public function setUpdatedAt(\DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
@@ -199,7 +209,7 @@ class Purchase
     /**
      * Get updatedAt by purchase
      */
-    public function getUpdatedAt() : \DateTime
+    public function getUpdatedAt(): \DateTime
     {
         return $this->updatedAt;
     }
@@ -207,7 +217,7 @@ class Purchase
     /**
      * Get reference by purchase
      */
-    public function getReference() : string
+    public function getReference(): string
     {
         return $this->reference;
     }
@@ -215,7 +225,7 @@ class Purchase
     /**
      * Get description by purchase
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -223,7 +233,7 @@ class Purchase
     /**
      * Get currency by purchase
      */
-    public function getCurrency() : string
+    public function getCurrency(): string
     {
         return $this->currency;
     }
@@ -231,7 +241,7 @@ class Purchase
     /**
      * Get total by purchase
      */
-    public function getTotal() : int
+    public function getTotal(): int
     {
         return $this->total;
     }
@@ -239,7 +249,7 @@ class Purchase
     /**
      * Get product by purchase
      */
-    public function getProduct() : Product
+    public function getProduct(): Product
     {
         return $this->product;
     }

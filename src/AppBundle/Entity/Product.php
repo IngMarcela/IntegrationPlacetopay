@@ -44,7 +44,7 @@ class Product
     /**
      * Get id by product
      */
-    public function getId() : int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -52,7 +52,7 @@ class Product
     /**
      * Get name by product
      */
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -60,7 +60,7 @@ class Product
     /**
      * Get price by product
      */
-    public function getPrice() : int
+    public function getPrice(): int
     {
         return $this->price;
     }
