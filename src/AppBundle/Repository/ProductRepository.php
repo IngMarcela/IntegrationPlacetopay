@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use Symfony\Component\Cache\Simple\FilesystemCache;
+
 /**
  * ProductRepository
  *
@@ -10,4 +12,18 @@ namespace AppBundle\Repository;
  */
 class ProductRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findInfoBasic()
+    {
+        $cache = new FilesystemCache();
+        $cache->delete('findProducts');
+        if (!$cache->has('findProducts')) {
+            $em = $this->getEntityManager();
+            $consult = $em->createQuery('SELECT ' .
+                'p.id, p.name, p.price ' .
+                'FROM AppBundle:Product p');
+            $cache->set('findProducts', $consult->getResult(), 3600);
+        }
+        return $cache->get('findProducts');
+
+    }
 }
