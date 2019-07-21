@@ -1,0 +1,114 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Purchase
+ *
+ * @ORM\Table(name="purchase")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PurchaseRepository")
+ */
+class Purchase
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="customerName", type="string", length=50)
+     */
+    private $customerName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="customerEmail", type="string", length=70)
+     */
+    private $customerEmail;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="customerMobile", type="string", length=11)
+     */
+    private $customerMobile;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="customerAddress", type="string", length=50)
+     */
+    private $customerAddress;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=30)
+     */
+    private $status;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="createdAt", type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updatedAt", type="datetime")
+     */
+    private $updatedAt;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reference", type="string", length=15)
+     */
+    private $reference;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=100)
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="currency", type="string", length=10)
+     */
+    private $currency;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="total", type="integer")
+     */
+    private $total;
+
+    /**
+     * @var AppBundle\Entity\Purchase
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Purchase", inversedBy="purchase")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_product", referencedColumnName="id")
+     * })
+     */
+    private $product;
+
+
+
+}
+

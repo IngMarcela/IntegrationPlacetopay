@@ -2,13 +2,13 @@
 
 namespace AppBundle\Tests\Controller;
 
-use AppBundle\DataFixtures\ORM\LoadOrderData;
+use AppBundle\DataFixtures\ORM\LoadPurchaseData;
 use AppBundle\DataFixtures\ORM\LoadProductData;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class OrderControllerTest extends WebTestCase
+class PurchaseControllerTest extends WebTestCase
 {
-    public function testGenerateOrder()
+    public function testGeneratePurchase()
     {
         $client = static::createClient();
         $container = $client->getContainer();
@@ -32,7 +32,7 @@ class OrderControllerTest extends WebTestCase
             'mobile' => $mobile,
             'address' => $address,
         ];
-        $crawler = $client->request('POST', '/Order/generateOrder', $data);
+        $crawler = $client->request('POST', '/Purchase/generatePurchase', $data);
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $content = json_decode($client->getResponse()->getContent(), true);
@@ -47,7 +47,7 @@ class OrderControllerTest extends WebTestCase
         $kernel = static::createKernel();
         $kernel->boot();
         $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
-        $query = $em->createQuery('SELECT COUNT(o.id) from AppBundle:Order o WHERE o.customerName = :name AND o.customerEmail = :email AND o.customerMobile = :mobile AND o.customerAddress = :address AND o.product = :product');
+        $query = $em->createQuery('SELECT COUNT(o.id) from AppBundle:Purchase o WHERE o.customerName = :name AND o.customerEmail = :email AND o.customerMobile = :mobile AND o.customerAddress = :address AND o.product = :product');
         $query->setParameter('name', $name);
         $query->setParameter('email', $email);
         $query->setParameter('mobile', $mobile);
@@ -57,17 +57,17 @@ class OrderControllerTest extends WebTestCase
 
     }
 
-    public function testListOrder()
+    public function testListPurchase()
     {
         $client = static::createClient();
         $container = $client->getContainer();
         $doctrine = $container->get('doctrine');
         $entityManager = $doctrine->getManager();
 
-        $fixture = new LoadOrderData();
+        $fixture = new LoadPurchaseData();
         $fixture->load($entityManager);
 
-        $crawler = $client->request('GET', '/Order/listOrders');
+        $crawler = $client->request('GET', '/Purchase/listPurchase');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $content = json_decode($client->getResponse()->getContent(), true);
