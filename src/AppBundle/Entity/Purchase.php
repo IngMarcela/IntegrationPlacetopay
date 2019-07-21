@@ -100,6 +100,20 @@ class Purchase
     private $total;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="processUrl", type="string", length=200)
+     */
+    private $processUrl;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="requestId", type="integer")
+     */
+    private $requestId;
+
+    /**
      * @var AppBundle\Entity\Purchase
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Product", inversedBy="purchase")
@@ -119,6 +133,8 @@ class Purchase
         string $description,
         string $currency,
         int $total,
+        string $processUrl,
+        int $requestId,
         Product $product
     ) {
         $this->createdAt = new DateTime();
@@ -132,6 +148,8 @@ class Purchase
         $this->description = $description;
         $this->currency = $currency;
         $this->total = $total;
+        $this->processUrl = $processUrl;
+        $this->requestId = $requestId;
         $this->product = $product;
     }
 
@@ -248,10 +266,28 @@ class Purchase
     }
 
     /**
+     * Get processUrl by purchase
+     */
+    public function getProcessUrl(): string
+    {
+        return $this->processUrl;
+    }
+
+    /**
+     * Get requestId by purchase
+     */
+    public function getRequestId(): int
+    {
+        return $this->requestId;
+    }
+
+    /**
      * Get product by purchase
      */
     public function getProduct(): Product
     {
         return $this->product;
     }
+
+
 }

@@ -29,6 +29,7 @@ class LoadPurchaseData extends AbstractFixture implements OrderedFixtureInterfac
         $addressList = ['calle', 'sucursal', 'carrera', 'manzana'];
         $statusList = ['CREATED', 'PAYED', 'REJECTED'];
         $referenceList = ['568853257', '736879634', '367890456', '345678847'];
+        $randomReference = $referenceList[random_int(0, 3)];
         $descriptionList = [
             'compra de Tv',
             'compra de comedor',
@@ -38,10 +39,13 @@ class LoadPurchaseData extends AbstractFixture implements OrderedFixtureInterfac
         ];
         $currencyList = ['COP', 'USD'];
         $totalList = [123456, 23600, 54978, 934034];
+        $requestIdList = [288393, 834834, 8348374, 8347384];
+        $randomRequestId = $requestIdList[random_int(0, 3)];
+        $proceesUrl = 'https://dev.placetopay.com/redirection/session/'.$randomRequestId.'/'.$randomReference;
         $purchase = new Purchase($nameList[random_int(0, 3)], $emailList[random_int(0, 3)],
             $mobileList[random_int(0, 3)], $addressList[random_int(0, 3)], $statusList[random_int(0, 2)],
-            $referenceList[random_int(0, 3)], $descriptionList[$numberProduct], $currencyList[random_int(0, 1)],
-            $totalList[random_int(0, 3)], $product);
+            $randomReference, $descriptionList[$numberProduct], $currencyList[random_int(0, 1)],
+            $totalList[random_int(0, 3)], $proceesUrl, $randomRequestId, $product);
         $manager->persist($purchase);
         $manager->flush();
 
