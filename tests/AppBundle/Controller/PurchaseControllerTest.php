@@ -23,6 +23,7 @@ class PurchaseControllerTest extends WebTestCase
         $email = 'algo@dominio.com';
         $address = 'calle con carrera';
         $mobile = random_int(312000, 318000);
+        $currency = 'COP';
 
 
         $data = [
@@ -31,6 +32,7 @@ class PurchaseControllerTest extends WebTestCase
             'email' => $email,
             'mobile' => $mobile,
             'address' => $address,
+            'currency' => $currency,
         ];
         $crawler = $client->request('POST', '/Purchase/generatePurchase', $data);
 
@@ -47,11 +49,12 @@ class PurchaseControllerTest extends WebTestCase
         $kernel = static::createKernel();
         $kernel->boot();
         $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
-        $query = $em->createQuery('SELECT COUNT(o.id) from AppBundle:Purchase o WHERE o.customerName = :name AND o.customerEmail = :email AND o.customerMobile = :mobile AND o.customerAddress = :address AND o.product = :product');
+        $query = $em->createQuery('SELECT COUNT(o.id) from AppBundle:Purchase o WHERE o.customerName = :name AND o.customerEmail = :email AND o.customerMobile = :mobile AND o.customerAddress = :address AND o.product = :product AND o.currency = :currency');
         $query->setParameter('name', $name);
         $query->setParameter('email', $email);
         $query->setParameter('mobile', $mobile);
         $query->setParameter('address', $address);
+        $query->setParameter('currency', $currency);
         $query->setParameter('product', $idProduct);
         $this->assertTrue('1' === $query->getSingleScalarResult());
 
@@ -103,7 +106,7 @@ class PurchaseControllerTest extends WebTestCase
         $this->assertArrayHasKey('currency', $content['data'][0]);
         $this->assertTrue(is_string($content['data'][0]['currency']));
         $this->assertArrayHasKey('total', $content['data'][0]);
-        $this->assertTrue(is_int($content['data'][0]['total'][0]));
+        $this->assertTrue(is_int($content['data'][0]['total']));
     }
 
 }

@@ -10,4 +10,12 @@ namespace AppBundle\Repository;
  */
 class PurchaseRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findPurchase()
+    {
+        $consult = $this->createQueryBuilder('o')
+            ->innerJoin('o.product', 'p')
+            ->addSelect('p')
+            ->getQuery();
+        return $consult->getArrayResult();
+    }
 }
