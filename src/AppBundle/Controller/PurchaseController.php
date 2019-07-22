@@ -40,7 +40,6 @@ class PurchaseController extends Controller
         try {
             $em = $this->getDoctrine()->getManager();
             if ($request->isMethod('POST')) {
-
                 $dateTime = new DateTime();
                 $name = $request->get("name");
                 $email = $request->get("email");
@@ -52,23 +51,56 @@ class PurchaseController extends Controller
                 $description = 'it bought a ' . $product->getName();
                 $currency = $request->get("currency");
                 $total = $product->getPrice();
-                //TODO requestId y processUrl estan tomando valor de prueba temporal, el valor final de estos debe ser el enviado por el servicio de redirection de placetopay
-                $requestId = 288393;
-                $processUrl = 'https://dev.placetopay.com/redirection/session/' . $requestId . '/' . $reference;
 
-                $purchase = new Purchase($name, $email,
-                    $mobile, $address, $status,
-                    $reference, $description, $currency,
-                    $total, $processUrl, $requestId, $product);
-                $em->persist($purchase);
-                $em->flush();
+                $newPayment = $this->buildStructure($request, $reference, $description, $total);
+                $connectionPtoP = PlacetopayController::initConnection($this->container->getParameter('IDENTIFICATOR'),
+                    $this->container->getParameter('SECRETKEY'), $this->container->getParameter('ENDPOINT'));
+                $result = $connectionPtoP->request($newPayment);;
+                if ($result->isSuccessful()) {
+                    $requestId = $result->requestId();
+                    $processUrl = $result->processUrl();
+
+                    $purchase = new Purchase($name, $email,
+                        $mobile, $address, $status,
+                        $reference, $description, $currency,
+                        $total, $processUrl, $requestId, $product);
+                    $em->persist($purchase);
+                    $em->flush();
+
+                    $response = ['data' => ['url' => $processUrl], 'success' => true, 'message' => 'order purchase successful generate'];
+                } else {
+                    $this->logger->error('presented an error in PurchaseController',
+                        ['message' => "" . $result->status()->message()]);
+                    $response['message'] = 'presented an error when generate purchase, request to load the page again';
+                }
             }
-            $response = ['data' => [], 'success' => true, 'message' => 'order purchase successful generate'];
+
         } catch (\Exception $e) {
             $this->logger->error('presented an error in PurchaseController', ['message' => "" . $e->getMessage()]);
             $response['message'] = 'presented an error when generate purchase, request to load the page again';
         }
         return new JsonResponse($response);
+    }
+
+
+    private function buildStructure(Request $request, string $reference, string $description, int $total): array
+    {
+        $data = [
+            'payment' => [
+                'reference' => $reference,
+                'description' => $description,
+                'amount' => [
+                    'currency' => $request->get('currency'),
+                    'total' => $total,
+                ],
+            ],
+            'expiration' => date('c', strtotime('+2 days')),
+            'returnUrl' => $this->container->getParameter('RETURNURL'),//?reference=' . $reference,
+            'ipAddress' => $request->server->get('REMOTE_ADDR'),
+            'userAgent' => $request->headers->get('user-agent'),
+        ];
+
+        return $data;
     }
 
     /**

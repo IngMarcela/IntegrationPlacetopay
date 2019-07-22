@@ -1,0 +1,5 @@
+parameters:
+  IDENTIFICATOR: "6dd490faf9cb87a9862245da41170ff2"
+  SECRETKEY: "024h1IlD"
+  ENDPOINT: "https://test.placetopay.com/redirection"
+  RETURNURL: "http://localhost:4200/"
