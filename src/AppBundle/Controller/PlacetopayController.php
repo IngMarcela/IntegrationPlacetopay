@@ -7,7 +7,7 @@ use Dnetix\Redirection\PlacetoPay;
 class PlacetopayController
 {
 
-    public static function initConnection(string $identification, string $secretKey, string  $endPoint)
+    public static function initConnection(string $identification, string $secretKey, string $endPoint)
     {
         return new PlacetoPay([
             'login' => $identification,

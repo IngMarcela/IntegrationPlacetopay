@@ -67,7 +67,11 @@ class PurchaseController extends Controller
                     $em->persist($purchase);
                     $em->flush();
 
-                    $response = ['data' => ['url' => $processUrl], 'success' => true, 'message' => 'order purchase successful generate'];
+                    $response = [
+                        'data' => ['url' => $processUrl],
+                        'success' => true,
+                        'message' => 'order purchase successful generate'
+                    ];
                 } else {
                     $this->logger->error('presented an error in PurchaseController',
                         ['message' => "" . $result->status()->message()]);
