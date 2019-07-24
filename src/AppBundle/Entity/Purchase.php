@@ -74,7 +74,7 @@ class Purchase
     /**
      * @var string
      *
-     * @ORM\Column(name="reference", type="string", length=15)
+     * @ORM\Column(name="reference", type="string", length=20)
      */
     private $reference;
 

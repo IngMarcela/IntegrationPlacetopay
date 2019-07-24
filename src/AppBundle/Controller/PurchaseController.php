@@ -40,16 +40,18 @@ class PurchaseController extends Controller
         try {
             $em = $this->getDoctrine()->getManager();
             if ($request->isMethod('POST')) {
+                $json = $request->request->get('json');
+                $data = json_decode($json);
                 $dateTime = new DateTime();
-                $name = $request->get("name");
-                $email = $request->get("email");
-                $mobile = $request->get("mobile");
-                $address = $request->get("address");
+                $name = $data->name;
+                $email = $data->email;
+                $mobile = $data->mobile;
+                $address = $data->address;
                 $status = 'CREATED';
                 $reference = random_int(0, 1000) . '' . $dateTime->format('YmdHmi');
-                $product = $em->getRepository('AppBundle:Product')->findOneBy(array('id' => $request->get('idProduct')));
+                $product = $em->getRepository('AppBundle:Product')->findOneBy(array('id' => $data->idProduct));
                 $description = 'it bought a ' . $product->getName();
-                $currency = $request->get("currency");
+                $currency = $data->currency;
                 $total = $product->getPrice();
 
                 $newPayment = $this->buildStructure($request, $reference, $description, $total);
@@ -89,17 +91,19 @@ class PurchaseController extends Controller
 
     private function buildStructure(Request $request, string $reference, string $description, int $total): array
     {
+        $json = $request->request->get('json');
+        $data = json_decode($json);
         $data = [
             'payment' => [
                 'reference' => $reference,
                 'description' => $description,
                 'amount' => [
-                    'currency' => $request->get('currency'),
+                    'currency' => $data->currency,
                     'total' => $total,
                 ],
             ],
             'expiration' => date('c', strtotime('+2 days')),
-            'returnUrl' => $this->container->getParameter('RETURNURL'),//?reference=' . $reference,
+            'returnUrl' => $this->container->getParameter('RETURNURL') . '/listPurchase/back/' . $reference,
             'ipAddress' => $request->server->get('REMOTE_ADDR'),
             'userAgent' => $request->headers->get('user-agent'),
         ];
@@ -127,5 +131,53 @@ class PurchaseController extends Controller
         return new JsonResponse($response);
     }
 
+    /**
+     * @Route("/statusPayment")
+     * @Method({"POST", "GET"})
+     */
+    public function getStatusPayment(Request $request): JsonResponse
+    {
+        $response = [
+            'data' => [],
+            'success' => false,
+            'error' => []
+        ];
 
+        try {
+            $json = $request->request->get('json');
+            $data = json_decode($json);
+            $connectionPtoP = PlacetopayController::initConnection($this->container->getParameter('IDENTIFICATOR'),
+                $this->container->getParameter('SECRETKEY'), $this->container->getParameter('ENDPOINT'));
+
+            $em = $this->getDoctrine()->getManager();
+            $purchase = $em->getRepository('AppBundle:Purchase')->findOneBy(array('reference' => $data->reference));
+
+            $result = $connectionPtoP->query($purchase->getRequestId());
+
+            if ($result->isSuccessful()) {
+
+                if ($result->status()->isApproved()) {
+                    $purchase->setStatus('APROVED');
+                    $em->persist($purchase);
+                    $em->flush();
+                    $response['data'][]['msg'] = 'PAYED';
+                } elseif ($result->status()->isRejected()) {
+                    $purchase->setStatus('REJECTED');
+                    $em->persist($purchase);
+                    $em->flush();
+                    $response['data'][]['msg'] = 'REJECTED';
+                } else {
+                    $response['data'][]['msg'] = 'UNKNOWN STATE';
+                }
+            } else {
+                $response['data'][]['msg'] = $result->status()->message();
+            }
+            $response['success'] = true;
+
+        } catch (Exception $e) {
+            $this->logger->error('presented an error in PurchaseController', ['message' => "" . $e->getMessage()]);
+            $response['message'] = $e->getMessage();
+        }
+        return new JsonResponse($response);
+    }
 }

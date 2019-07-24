@@ -25,14 +25,15 @@ class PurchaseControllerTest extends WebTestCase
         $mobile = random_int(312000, 318000);
         $currency = 'COP';
 
-
         $data = [
-            'idProduct' => $idProduct,
-            'name' => $name,
-            'email' => $email,
-            'mobile' => $mobile,
-            'address' => $address,
-            'currency' => $currency,
+            'json' => json_encode([
+                'idProduct' => $idProduct,
+                'name' => $name,
+                'email' => $email,
+                'mobile' => $mobile,
+                'address' => $address,
+                'currency' => $currency,
+            ])
         ];
         $crawler = $client->request('POST', '/Purchase/generatePurchase', $data);
 
