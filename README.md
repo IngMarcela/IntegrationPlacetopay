@@ -1,3 +1,8 @@
+# Video tutorial de configuración y demostración del proyecto
+
++ https://youtu.be/dlAvd0IXMQw
+
+
 # IntegrationPlacetopay
 
 + Aplicación construida con el framework symfony versión 3.4 para simular compras online mediante integración con la pasarela PlaceToPlay (Pago básico)
